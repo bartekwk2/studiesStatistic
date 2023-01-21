@@ -8,6 +8,7 @@ from scipy.stats import shapiro
 from statsmodels.formula.api import ols
 from statsmodels.stats.multicomp import pairwise_tukeyhsd
 from statsmodels.stats.weightstats import DescrStatsW, CompareMeans
+from sklearn.cluster import KMeans
 
 
 # ------- 1) Read data
@@ -250,18 +251,73 @@ def levene_test(df_1, df_2):
                     proportiontocut=0.05))  # heavy-tailed distributions
 
 
-data, s_width_versicolor, s_width_virginica = read_data()
-my_palette_1, my_palette_2 = plot_parameters()
+#-------- 8) K means
 
-df_1, df_2 = t_test_one_plot(data)
-t_test_one_virginica(s_width_virginica)
-t_test_one_versicolor(s_width_versicolor)
+def k_means():
+    iris = pd.read_csv("iris/Iris.csv").iloc[:, 1:]
+    x = iris.iloc[:, [0, 1, 2, 3]].values
 
-df_3 = t_test_two_plot(data, my_palette_2)
-t_test_two(s_width_versicolor, s_width_virginica)
+    sns.FacetGrid(iris, hue="Species", height=3).map(sns.distplot, "PetalLengthCm").add_legend()
+    sns.FacetGrid(iris, hue="Species", height=3).map(sns.distplot, "PetalWidthCm").add_legend()
+    sns.FacetGrid(iris, hue="Species", height=3).map(sns.distplot, "SepalLengthCm").add_legend()
+    plt.show()
 
-df_4 = t_test_two_paired_plot(data)
-t_test_two_paired(df_4)
+    sns.boxplot(x="Species", y="PetalLengthCm", data=iris)
+    plt.show()
 
-anova(data, my_palette_1)
-levene_test(df_1, df_2)
+    wcss = []
+    for i in range(1, 11):
+        kmeans = KMeans(n_clusters=i, init='k-means++', max_iter=300, n_init=10, random_state=0)
+        kmeans.fit(x)
+        wcss.append(kmeans.inertia_)
+
+    plt.plot(range(1, 11), wcss)
+    plt.title('The elbow method')
+    plt.xlabel('Number of clusters')
+    plt.ylabel('WCSS')
+    plt.show()
+
+    kmeans = KMeans(n_clusters=3, init='k-means++', max_iter=300, n_init=10, random_state=0)
+    y_kmeans = kmeans.fit_predict(x)
+    plt.scatter(x[y_kmeans == 0, 0], x[y_kmeans == 0, 1], s=100, c='purple', label='Iris-setosa')
+    plt.scatter(x[y_kmeans == 1, 0], x[y_kmeans == 1, 1], s=100, c='orange', label='Iris-versicolour')
+    plt.scatter(x[y_kmeans == 2, 0], x[y_kmeans == 2, 1], s=100, c='green', label='Iris-virginica')
+
+
+    plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=100, c='red', label='Centroids')
+    plt.legend()
+
+    fig = plt.figure(figsize=(15, 15))
+    fig.add_subplot(111, projection='3d')
+    plt.scatter(x[y_kmeans == 0, 0], x[y_kmeans == 0, 1], s=100, c='purple', label='Iris-setosa')
+    plt.scatter(x[y_kmeans == 1, 0], x[y_kmeans == 1, 1], s=100, c='orange', label='Iris-versicolour')
+    plt.scatter(x[y_kmeans == 2, 0], x[y_kmeans == 2, 1], s=100, c='green', label='Iris-virginica')
+
+    plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=100, c='red', label='Centroids')
+    plt.show()
+
+
+
+# data, s_width_versicolor, s_width_virginica = read_data()
+# my_palette_1, my_palette_2 = plot_parameters()
+#
+# df_1, df_2 = t_test_one_plot(data)
+# t_test_one_virginica(s_width_virginica)
+# t_test_one_versicolor(s_width_versicolor)
+#
+# df_3 = t_test_two_plot(data, my_palette_2)
+# t_test_two(s_width_versicolor, s_width_virginica)
+#
+# df_4 = t_test_two_paired_plot(data)
+# t_test_two_paired(df_4)
+#
+# anova(data, my_palette_1)
+# levene_test(df_1, df_2)
+
+k_means()
+
+
+
+
+
+
