@@ -278,9 +278,9 @@ def k_means():
 
 
 
-    plt.scatter(x[y_kmeans == 0, 1], x[y_kmeans == 0, 1], s=100, c='purple', label='Grupa 1')
-    plt.scatter(x[y_kmeans == 1, 1], x[y_kmeans == 1, 1], s=100, c='orange', label='Grupa 2')
-    plt.scatter(x[y_kmeans == 2, 1], x[y_kmeans == 2, 1], s=100, c='green', label='Grupa 3')
+    plt.scatter(x[y_kmeans == 0, 0], x[y_kmeans == 0, 1], s=100, c='purple', label='Grupa 1')
+    plt.scatter(x[y_kmeans == 1, 0], x[y_kmeans == 1, 1], s=100, c='orange', label='Grupa 2')
+    plt.scatter(x[y_kmeans == 2, 0], x[y_kmeans == 2, 1], s=100, c='green', label='Grupa 3')
 
 
     plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=100, c='red', label='Centroidy')
