@@ -257,14 +257,6 @@ def k_means():
     iris = pd.read_csv("iris/Iris.csv").iloc[:, 1:]
     x = iris.iloc[:, [0, 1, 2, 3]].values
 
-    sns.FacetGrid(iris, hue="Species", height=3).map(sns.distplot, "PetalLengthCm").add_legend()
-    sns.FacetGrid(iris, hue="Species", height=3).map(sns.distplot, "PetalWidthCm").add_legend()
-    sns.FacetGrid(iris, hue="Species", height=3).map(sns.distplot, "SepalLengthCm").add_legend()
-    plt.show()
-
-    sns.boxplot(x="Species", y="PetalLengthCm", data=iris)
-    plt.show()
-
     wcss = []
     for i in range(1, 11):
         kmeans = KMeans(n_clusters=i, init='k-means++', max_iter=300, n_init=10, random_state=0)
