@@ -9,6 +9,7 @@ from statsmodels.formula.api import ols
 from statsmodels.stats.multicomp import pairwise_tukeyhsd
 from statsmodels.stats.weightstats import DescrStatsW, CompareMeans
 from sklearn.cluster import KMeans
+from sklearn.metrics import silhouette_score
 
 
 # ------- 1) Read data
@@ -264,19 +265,25 @@ def k_means():
         wcss.append(kmeans.inertia_)
 
     plt.plot(range(1, 11), wcss)
-    plt.title('The elbow method')
-    plt.xlabel('Number of clusters')
+    plt.title('Wykres osypiska')
+    plt.xlabel('Liczba klastrów')
     plt.ylabel('WCSS')
     plt.show()
 
     kmeans = KMeans(n_clusters=3, init='k-means++', max_iter=300, n_init=10, random_state=0)
     y_kmeans = kmeans.fit_predict(x)
-    plt.scatter(x[y_kmeans == 0, 0], x[y_kmeans == 0, 1], s=100, c='purple', label='Iris-setosa')
-    plt.scatter(x[y_kmeans == 1, 0], x[y_kmeans == 1, 1], s=100, c='orange', label='Iris-versicolour')
-    plt.scatter(x[y_kmeans == 2, 0], x[y_kmeans == 2, 1], s=100, c='green', label='Iris-virginica')
+    print(y_kmeans[:50])
+    print(y_kmeans[50:100])
+    print(y_kmeans[100:])
 
 
-    plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=100, c='red', label='Centroids')
+
+    plt.scatter(x[y_kmeans == 0, 1], x[y_kmeans == 0, 1], s=100, c='purple', label='Grupa 1')
+    plt.scatter(x[y_kmeans == 1, 1], x[y_kmeans == 1, 1], s=100, c='orange', label='Grupa 2')
+    plt.scatter(x[y_kmeans == 2, 1], x[y_kmeans == 2, 1], s=100, c='green', label='Grupa 3')
+
+
+    plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=100, c='red', label='Centroidy')
     plt.legend()
 
     fig = plt.figure(figsize=(15, 15))
@@ -287,6 +294,7 @@ def k_means():
 
     plt.scatter(kmeans.cluster_centers_[:, 0], kmeans.cluster_centers_[:, 1], s=100, c='red', label='Centroids')
     plt.show()
+
 
 
 
